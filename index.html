@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Numbers</title>
     <script>
-      const N = (n=>isNaN(n)?0:n)(parseInt(location.search.substr(1)));
-      document.title = 'Number: ' + N;
-      const prevNums = new Array(5).fill(0).map((_, i) => N - i - 1);
-      const nextNums = new Array(5).fill(0).map((_, i) => N + i + 1);
-      const _w = s => document.write(s);
+      const N = ((n)=>{
+        if(n.length) n = parseInt(n);
+        else n = 0;
+      })(location.search.substr(1));
+
       function props(n) {
         const calcs = {
           isPrime(n) {
@@ -124,25 +124,31 @@
         return Object.entries(calcs).filter(([k, f])=>k.startsWith('is')).map(([k, f])=>[k, f.apply(calcs, [n])]);
       }
 
-    </script>
-  </head>
-<body>
-    <h1><script>_w(N)</script></h1>
-    <ul class="tags">
-      <script>_w(
-        props(N).filter(([k,v])=>v).map(([k,v])=>`<li>${k}</li>`).join('\n')
-      );</script>
-    </ul>
-    <ul class="prev">
-      <script>
-          _w(prevNums.map(i=>`<li><a href="?${i}">${i}</a></li>`).join('\n'));
-      </script>
-    </ul>
-    <ul class="next">
-      <script>
-          _w(nextNums.map(i=>`<li><a href="?${i}">${i}</a></li>`).join('\n'));
-      </script>
-    </ul>
+      function renderPage(){
+        if(isNaN(N)){
+          var content = document.importNode(document.getElementById('notfound').content, true);
+          document.body.appendChild(content);
+          window.location = '404.html';
+          return;
+        }
+        var content = document.importNode(document.getElementById('article').content, true);
+        content.getElementById('title').innerHTML = N;
+        content.getElementById('tags').innerHTML = props(N).filter(([k,v])=>v).map(([k,v])=>`<li>${k}</li>`).join('\n');
+        content.getElementById('prev').innerHTML = prevNums.map(i=>`<li><a href="?${i}">${i}</a></li>`).join('\n');
+        content.getElementById('next').innerHTML = nextNums.map(i=>`<li><a href="?${i}">${i}</a></li>`).join('\n');
+        document.body.appendChild(content);
+      }
 
-</body>
+    </script>
+    <template id="article">
+      <h1 id="title"></h1>
+      <ul id="tags"></ul>
+      <ul id="prev"></ul>
+      <ul id="next"></ul>  
+    </template>
+    <template id="notfound">
+      <h1>404 - Not Found</h1>
+    </template>
+  </head>
+<body onload="renderPage()"></body>
 </html>
