@@ -8,13 +8,14 @@
 
     <script>
       const N = (n => n.length ? parseInt(n) : 0)(location.search.substr(1));
+      const _w = html => document.write && document.write(html);
       if(isNaN(N)){
         document.title = 'Page not Found';
         if(document.write){
-          document.write('<meta name="robots" content="noindex" />');
-          document.write(`<link rel="canonical" href="${new URL('./404.html', new URL(window.location.href)).href}" />`);
+          _w('<meta name="robots" content="noindex" />');
+          _w(`<link rel="canonical" href="${new URL('./404.html', new URL(window.location.href)).href}" />`);
         }
-        window.location = '404.html';
+        //window.location = '404.html';
       }else{
         document.title = 'Number: ' + N;
         document.querySelector('meta[name="description"]')
@@ -136,7 +137,12 @@
       }
 
       function renderPage(){
-        if(isNaN(N)) return;
+        if(isNaN(N)){
+          document.body.appendChild(
+            document.importNode(document.getElementById('notfound').content, true)
+          );
+          return;
+        }
         const prevNums = new Array(5).fill(0).map((_, i) => N - i - 1);
         const nextNums = new Array(5).fill(0).map((_, i) => N + i + 1);
         const content = document.importNode(document.getElementById('article').content, true);
@@ -153,6 +159,10 @@
       <ul id="tags"></ul>
       <ul id="prev"></ul>
       <ul id="next"></ul>  
+    </template>
+    <template id="notfound">
+      <h1 id="title">Page not found</h1>
+      <p>The requested URL does not exist. Go back to <a href="./">the home page</a></p>
     </template>
   </head>
 <body onload="renderPage()"></body>
