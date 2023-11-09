@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>My first three.js app</title>
+    <style>
+        body { margin: 0; }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/",
+          "maze": "./maze.js"
+        }
+      }
+    </script>
+    <script type="module">
+        import renderMaze from "maze";
+        // Execution
+        window.initialize = () => {
+            // Example matrix: 1s are walls, 0s are paths
+            const mazeMatrix = [
+                [1, 1, 1, 1, 1],
+                [1, 0, 0, 0, 1],
+                [1, 0, 1, 0, 1],
+                [1, 0, 1, 0, 0],
+                [1, 1, 1, 1, 1]
+            ];
+
+            // Call the function with your matrix as an argument
+            renderMaze(mazeMatrix);
+            
+            
+            return;
+            const scene = createScene();
+            const camera = createCamera();
+            const renderer = createRenderer();
+            addLights(scene);
+            createFloor(scene);
+            const controls = new PointerLockControls(camera, renderer.domElement);
+            createWalls(scene, mazeMatrix);
+            setupEventHandlers(controls);
+            animate(renderer, scene, camera, controls);
+        }
+    </script>
+</head>
+<body onload="initialize()">
+</body>
+</html>
