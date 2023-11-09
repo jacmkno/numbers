@@ -4,11 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Numbers</title>
+    <meta name="description" content="Explore curious properties of the integer numbers.">
+
     <script>
-      const N = ((n)=>{
-        if(n.length) n = parseInt(n);
-        else n = 0;
-      })(location.search.substr(1));
+      const N = (n => n.length ? parseInt(n) : 0)(location.search.substr(1));
+      if(isNaN(N)){
+        document.title = 'Page not Found';
+        window.location = '404.html';
+      }else{
+        document.title = 'Number: ' + N;
+        document.querySelector('meta[name="description"]')
+          .setAttribute("content", `${document.title} is quite peculiar. Explore it's properties`);
+      }
 
       function props(n) {
         const calcs = {
@@ -125,13 +132,10 @@
       }
 
       function renderPage(){
-        if(isNaN(N)){
-          var content = document.importNode(document.getElementById('notfound').content, true);
-          document.body.appendChild(content);
-          window.location = '404.html';
-          return;
-        }
-        var content = document.importNode(document.getElementById('article').content, true);
+        if(isNaN(N)) return;
+        const prevNums = new Array(5).fill(0).map((_, i) => N - i - 1);
+        const nextNums = new Array(5).fill(0).map((_, i) => N + i + 1);
+        const content = document.importNode(document.getElementById('article').content, true);
         content.getElementById('title').innerHTML = N;
         content.getElementById('tags').innerHTML = props(N).filter(([k,v])=>v).map(([k,v])=>`<li>${k}</li>`).join('\n');
         content.getElementById('prev').innerHTML = prevNums.map(i=>`<li><a href="?${i}">${i}</a></li>`).join('\n');
@@ -145,9 +149,6 @@
       <ul id="tags"></ul>
       <ul id="prev"></ul>
       <ul id="next"></ul>  
-    </template>
-    <template id="notfound">
-      <h1>404 - Not Found</h1>
     </template>
   </head>
 <body onload="renderPage()"></body>
