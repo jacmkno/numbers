@@ -15,7 +15,7 @@
           _w('<meta name="robots" content="noindex" />');
           _w(`<link rel="canonical" href="${new URL('./404.html', new URL(window.location.href)).href}" />`);
         }
-        //window.location = '404.html';
+        window.location = '404.html'; 
       }else{
         document.title = 'Number: ' + N;
         document.querySelector('meta[name="description"]')
