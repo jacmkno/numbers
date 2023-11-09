@@ -3,15 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+      const N = (n=>isNaN(n)?0:n)(parseInt(location.search.substr(1)));
+      const prevNums = new Array(5).fill(0).map((_, i) => N - i - 1);
+      const nextNums = new Array(5).fill(0).map((_, i) => N + i + 1);
+      const _w = s => document.write(s);
+      function props(n) {
+        const calcs = {
+          isPrime(n) {
+            if (n <= 1) return false;
+            if (n <= 3) return true;
+            if (n % 2 === 0 || n % 3 === 0) return false;
+            for (let i = 5; i * i <= n; i += 6) {
+              if (n % i === 0 || n % (i + 2) === 0) return false;
+            }
+            return true;
+          },
+          isEven(n) {
+            return n % 2 === 0;
+          },
+          isOdd(n) {
+            return n % 2 !== 0;
+          },
+          isSquare(n) {
+            return n === Math.pow(Math.round(Math.sqrt(n)), 2);
+          },
+          isCube(n) {
+            return n === Math.pow(Math.round(Math.cbrt(n)), 3);
+          },
+          isFibonacci(n) {
+            const isPerfectSquare = (x) => {
+              let s = Math.sqrt(x);
+              return s * s === x;
+            };
+            return isPerfectSquare(5 * n * n + 4) || isPerfectSquare(5 * n * n - 4);
+          },
+          isFactorial(n) {
+            let i = 1;
+            while (n > 1) n /= i++;
+            return n === 1;
+          },
+          isPerfect(n) {
+            let sum = 1;
+            for (let i = 2; i * i <= n; i++) {
+              if (n % i === 0) {
+                sum += i;
+                if (i * i !== n) sum += n / i;
+              }
+            }
+            return sum === n && n !== 1;
+          },
+          isTriangular(n) {
+            const x = (Math.sqrt(8 * n + 1) - 1) / 2;
+            return x === Math.floor(x);
+          },
+          isPentagonal(n) {
+            const x = (Math.sqrt(24 * n + 1) + 1) / 6;
+            return x === Math.floor(x);
+          },
+          isHexagonal(n) {
+            const x = (Math.sqrt(8 * n + 1) + 1) / 4;
+            return x === Math.floor(x);
+          },
+          isPalindrome(n) {
+            const str = n.toString();
+            return str === str.split('').reverse().join('');
+          },
+          isSumOfDigits(n) {
+            return n.toString().split('').reduce((acc, digit) => acc + Number(digit), 0) == n;
+          },
+          isArmstrongNumber(n) {
+            const digits = n.toString().split('');
+            const power = digits.length;
+            return digits.reduce((acc, digit) => acc + Math.pow(Number(digit), power), 0) === n;
+          },
+          isHarshadNumber(n) {
+            const sum = n.toString().split('').reduce((acc, digit) => acc + Number(digit), 0);
+            return n % sum === 0;
+          },
+          numberOfDivisors(n) {
+            let count = 0;
+            for (let i = 1; i <= n; i++) {
+              if (n % i === 0) count++;
+            }
+            return count;
+          },
+          sumOfDivisors(n) {
+            let sum = 0;
+            for (let i = 1; i <= n; i++) {
+              if (n % i === 0) sum += i;
+            }
+            return sum;
+          },
+          isSumOfDivisors(n) {
+            let sum = 0;
+            for (let i = 1; i <= n; i++) {
+              if (n % i === 0) sum += i;
+            }
+            return sum == n;
+          },
+          isDeficientNumber(n) {
+            const sum = this.sumOfDivisors(n) - n;
+            return sum < n;
+          },
+          isAbundantNumber(n) {
+            const sum = this.sumOfDivisors(n) - n;
+            return sum > n;
+          },
+          isAmicableNumber(n) {
+            const sumOfDivs = this.sumOfDivisors(n) - n;
+            return n !== sumOfDivs && this.sumOfDivisors(sumOfDivs) - sumOfDivs === n;
+          },
+          isAutomorphicNumber(n) {
+            const square = n * n;
+            return square.toString().endsWith(n.toString());
+          },
+        }
+        return Object.entries(calcs).filter(([k, f])=>k.startsWith('is')).map(([k, f])=>[k, f.apply(calcs, [n])]);
+      }
+
+    </script>
     <title>Hello World</title>
-</head>
+  </head>
 <body>
-    <ul>
+    <h1><script>_w(N)</script></h1>
+    <ul class="tags">
+      <script>_w(
+        props(N).filter(([k,v])=>v).map(([k,v])=>`<li>${k}</li>`).join('\n')
+      );</script>
+    </ul>
+    <ul class="prev">
       <script>
-          for(let i=0; i < 10; i++){
-            document.write(`<li>${i}</li>`);
-          }
+          _w(prevNums.map(i=>`<li><a href="?${i}">${i}</a></li>`).join('\n'));
       </script>
     </ul>
+    <ul class="next">
+      <script>
+          _w(nextNums.map(i=>`<li><a href="?${i}">${i}</a></li>`).join('\n'));
+      </script>
+    </ul>
+
 </body>
 </html>
