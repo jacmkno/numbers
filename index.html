@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Numbers</title>
     <script>
       const N = (n=>isNaN(n)?0:n)(parseInt(location.search.substr(1)));
+      document.title = 'Number: ' + N;
       const prevNums = new Array(5).fill(0).map((_, i) => N - i - 1);
       const nextNums = new Array(5).fill(0).map((_, i) => N + i + 1);
       const _w = s => document.write(s);
@@ -123,7 +125,6 @@
       }
 
     </script>
-    <title>Hello World</title>
   </head>
 <body>
     <h1><script>_w(N)</script></h1>
