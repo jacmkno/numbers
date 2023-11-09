@@ -11,6 +11,8 @@
       if(isNaN(N)){
         document.title = 'Page not Found';
         window.location = '404.html';
+        document.write('<meta name="robots" content="noindex" />');
+        document.write(`<link rel="canonical" href="${new URL('./404.html', new URL(window.location.href)).href}" />`);
       }else{
         document.title = 'Number: ' + N;
         document.querySelector('meta[name="description"]')
