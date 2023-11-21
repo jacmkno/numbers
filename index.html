@@ -46,11 +46,11 @@
             return n === Math.pow(Math.round(Math.cbrt(n)), 3);
           },
           isFibonacci(n) {
-            const isPerfectSquare = (x) => {
-              let s = Math.sqrt(x);
+           return this.isPerfectSquare(5 * n * n + 4) || this.isPerfectSquare(5 * n * n - 4);
+          },
+          isPerfectSquare(x) {
+              let s = Math.floor(Math.sqrt(x));
               return s * s === x;
-            };
-            return isPerfectSquare(5 * n * n + 4) || isPerfectSquare(5 * n * n - 4);
           },
           isFactorial(n) {
             let i = 1;
@@ -152,6 +152,32 @@
         content.getElementById('next').innerHTML = nextNums.map(i=>`<li><a href="?${i}">${i}</a></li>`).join('\n');
         document.body.appendChild(content);
       }
+
+    const TITLES = {
+      isPrime: "Prime Number",
+      isEven: "Even Number",
+      isOdd: "Odd Number",
+      isSquare: "Perfect Square",
+      isCube: "Perfect Cube",
+      isFibonacci: "Fibonacci Number",
+      isPerfectSquare: "Perfect Square Check",
+      isFactorial: "Factorial Number",
+      isPerfect: "Perfect Number",
+      isTriangular: "Triangular Number",
+      isPentagonal: "Pentagonal Number",
+      isHexagonal: "Hexagonal Number",
+      isPalindrome: "Palindrome Number",
+      isSumOfDigits: "Equal to Sum of Digits",
+      isArmstrongNumber: "Armstrong Number",
+      isHarshadNumber: "Harshad Number",
+      numberOfDivisors: "Number of Divisors",
+      sumOfDivisors: "Sum of Divisors",
+      isSumOfDivisors: "Equal to Sum of Divisors",
+      isDeficientNumber: "Deficient Number",
+      isAbundantNumber: "Abundant Number",
+      isAmicableNumber: "Amicable Number",
+      isAutomorphicNumber: "Automorphic Number"
+    };
 
     </script>
     <template id="article">
