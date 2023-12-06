@@ -146,10 +146,10 @@
         const prevNums = new Array(5).fill(0).map((_, i) => N - i - 1);
         const nextNums = new Array(5).fill(0).map((_, i) => N + i + 1);
         const content = document.importNode(document.getElementById('article').content, true);
-        content.getElementById('title').innerHTML = N;
+        content.getElementById('title').innerHTML = `The Integer Number: ${N}`;
         content.getElementById('tags').innerHTML = props(N).filter(([k,v])=>v).map(([k,v])=>`<li><b>${TITLES[k]??k}</b><p>${DEFINITIONS[k]??''}</p></li>`).join('\n');
-        content.getElementById('prev').innerHTML = prevNums.map(i=>`<li><a href="?${i}">${i}</a></li>`).join('\n');
-        content.getElementById('next').innerHTML = nextNums.map(i=>`<li><a href="?${i}">${i}</a></li>`).join('\n');
+        content.getElementById('prev').innerHTML = prevNums.map(i=>`<li><a href="?${i}">The Number ${i}</a></li>`).join('\n');
+        content.getElementById('next').innerHTML = nextNums.map(i=>`<li><a href="?${i}">The Number ${i}</a></li>`).join('\n');
         document.body.appendChild(content);
       }
 
