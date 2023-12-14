@@ -8,6 +8,7 @@
 
     <script>
       const N = (n => n.length ? parseInt(n) : 0)(location.search.substr(1));
+      const Nwords = numberToWords(N);
       const _w = html => document.write && document.write(html);
       if(isNaN(N)){
         document.title = 'Page not Found';
@@ -17,11 +18,11 @@
         }
         window.location = '404.html?url=' + encodeURIComponent(window.location); 
       }else{
-        document.title = 'Number: ' + N;
+        document.title = 'Number: ' + Nwords;
         document.querySelector('meta[name="description"]')
           .setAttribute("content", `${document.title} is quite peculiar. Explore it's properties`);
       }
-
+        
       function props(n) {
         const calcs = {
           isPrime(n) {
@@ -147,77 +148,110 @@
         const nextNums = new Array(5).fill(0).map((_, i) => N + i + 1);
         const content = document.importNode(document.getElementById('article').content, true);
         content.getElementById('title').innerHTML = `The Integer Number: ${N}`;
+        content.getElementById('words').innerHTML = Nwords;
         content.getElementById('tags').innerHTML = props(N).filter(([k,v])=>v).map(([k,v])=>`<li><b>${TITLES[k]??k}</b><p>${DEFINITIONS[k]??''}</p></li>`).join('\n');
         content.getElementById('prev').innerHTML = prevNums.map(i=>`<li><a href="?${i}">The Number ${i}</a></li>`).join('\n');
         content.getElementById('next').innerHTML = nextNums.map(i=>`<li><a href="?${i}">The Number ${i}</a></li>`).join('\n');
         document.body.appendChild(content);
       }
 
-    const TITLES = {
-      isPrime: "Prime Number",
-      isEven: "Even Number",
-      isOdd: "Odd Number",
-      isSquare: "Perfect Square",
-      isCube: "Perfect Cube",
-      isFibonacci: "Fibonacci Number",
-      isPerfectSquare: "Perfect Square Check",
-      isFactorial: "Factorial Number",
-      isPerfect: "Perfect Number",
-      isTriangular: "Triangular Number",
-      isPentagonal: "Pentagonal Number",
-      isHexagonal: "Hexagonal Number",
-      isPalindrome: "Palindrome Number",
-      isSumOfDigits: "Equal to Sum of Digits",
-      isArmstrongNumber: "Armstrong Number",
-      isHarshadNumber: "Harshad Number",
-      numberOfDivisors: "Number of Divisors",
-      sumOfDivisors: "Sum of Divisors",
-      isSumOfDivisors: "Equal to Sum of Divisors",
-      isDeficientNumber: "Deficient Number",
-      isAbundantNumber: "Abundant Number",
-      isAmicableNumber: "Amicable Number",
-      isAutomorphicNumber: "Automorphic Number"
-    };
+      const TITLES = {
+        isPrime: "Prime Number",
+        isEven: "Even Number",
+        isOdd: "Odd Number",
+        isSquare: "Perfect Square",
+        isCube: "Perfect Cube",
+        isFibonacci: "Fibonacci Number",
+        isPerfectSquare: "Perfect Square Check",
+        isFactorial: "Factorial Number",
+        isPerfect: "Perfect Number",
+        isTriangular: "Triangular Number",
+        isPentagonal: "Pentagonal Number",
+        isHexagonal: "Hexagonal Number",
+        isPalindrome: "Palindrome Number",
+        isSumOfDigits: "Equal to Sum of Digits",
+        isArmstrongNumber: "Armstrong Number",
+        isHarshadNumber: "Harshad Number",
+        numberOfDivisors: "Number of Divisors",
+        sumOfDivisors: "Sum of Divisors",
+        isSumOfDivisors: "Equal to Sum of Divisors",
+        isDeficientNumber: "Deficient Number",
+        isAbundantNumber: "Abundant Number",
+        isAmicableNumber: "Amicable Number",
+        isAutomorphicNumber: "Automorphic Number"
+      };
+  
+      const DEFINITIONS = {
+        isPrime: `A <b>Prime Number</b> is a positive integer greater than 1 that has no divisors other than <b>1 and itself</b>. Prime numbers are crucial in number theory due to their fundamental properties and are widely used in fields such as cryptography, computer science, and mathematics.`,
+        isEven: `An <b>Even Number</b> is an integer that is <i>divisible by 2</i>. It can be represented in the form <b>2n</b>, where n is an integer. Even numbers are significant in various mathematical constructs and have properties distinct from odd numbers.`,    
+        isOdd: `An <b>Odd Number</b> is an integer that is <i>not divisible by 2</i>. It can be written in the form <b>2n + 1</b>, where n is an integer. Odd numbers have unique properties and play a key role in number theory and various mathematical patterns.`,
+        isSquare: `A <b>Perfect Square</b> is an integer that can be expressed as the square of another integer. For example, 25 is a perfect square since it's 5 squared. Identifying perfect squares is important in solving quadratic equations and in understanding geometric and algebraic properties.`,
+        isCube: `A <b>Perfect Cube</b> is an integer that is the cube of another integer. For instance, 27 is a perfect cube as it's 3 cubed. Perfect cubes are important in understanding three-dimensional geometry and various algebraic functions.`,    
+        isFibonacci: `A <b>Fibonacci Number</b> belongs to a sequence where each number is the sum of the two preceding ones, starting from 0 and 1. This sequence appears in numerous natural phenomena, biological settings, and in various areas of mathematics and art.`,    
+        isPerfectSquare: `Determining if a number is a <b>Perfect Square</b> involves checking if it can be expressed as the square of an integer. This concept is crucial in understanding quadratic forms and Pythagorean triples in geometry and number theory.`,
+        isFactorial: `A number is a <b>Factorial Number</b> if it's the product of all positive integers up to a certain number. For example, 5! (factorial of 5) equals 120. Factorials are fundamental in combinatorics, probability calculations, and series expansions in calculus.`,
+        isPerfect: `A <b>Perfect Number</b> is equal to the sum of its positive divisors, excluding itself. For example, 6 is a perfect number because its divisors are 1, 2, and 3, and 1 + 2 + 3 = 6. Perfect numbers have been studied extensively in number theory for their unique properties.`,    
+        isTriangular: `A <b>Triangular Number</b> can form an equilateral triangle. It's the sum of the first n natural numbers. For example, 6 is triangular because 1 + 2 + 3 = 6. These numbers have applications in combinatorics and geometric arrangements.`,
+        isPentagonal: `A <b>Pentagonal Number</b> represents a pattern where points form a pentagon, and each subsequent layer forms another pentagon. These numbers have applications in various mathematical problems and polygonal number theory.`,
+        isHexagonal: `A <b>Hexagonal Number</b> is a figure number that represents a hexagon with a dot in the center and other dots surrounding it. These numbers are useful in solving certain geometric problems and in understanding polygonal number patterns.`,
+        isPalindrome: `A <b>Palindrome Number</b> is a number that remains the same when its digits are reversed. For example, 121 is a palindrome. These numbers are interesting in number theory and have applications in computer science, specifically in algorithms and data structures.`,
+        isArmstrongNumber: `An <b>Armstrong Number</b> (or narcissistic number) is a number that is the sum of its own digits each raised to the power of the number of digits. For example, 153 is an Armstrong number since 1³ + 5³ + 3³ = 153. They are significant in digital electronics and error checking methods.`,
+        isHarshadNumber: `A <b>Harshad Number</b> is an integer that is divisible by the sum of its digits. For instance, 18 is a Harshad number because 1 + 8 = 9 and 18 is divisible by 9. These numbers are intriguing in recreational mathematics and number theory.`
+      };
+  
+      const TESTS = {
+        isPrime: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29],
+        isEven: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20],
+        isOdd: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19],
+        isSquare: [1, 4, 9, 16, 25, 36, 49, 64, 81, 100],
+        isCube: [1, 8, 27, 64, 125, 216, 343, 512, 729, 1000],
+        isFibonacci: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34],
+        isPerfectSquare: [1, 4, 9, 16, 25, 36, 49, 64, 81, 100],
+        isFactorial: [1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800],
+        isPerfect: [6, 28, 496, 8128, 33550336],
+        isTriangular: [1, 3, 6, 10, 15, 21, 28, 36, 45, 55],
+        isPentagonal: [1, 5, 12, 22, 35, 51, 70, 92, 117, 145],
+        isHexagonal: [1, 6, 15, 28, 45, 66, 91, 120, 153, 190],
+        isPalindrome: [11, 22, 33, 44, 55, 66, 77, 88, 99, 101],
+        isArmstrongNumber: [1, 153, 370, 371, 407],
+        isHarshadNumber: [12, 18, 20, 21, 24, 27, 30, 36, 40, 42]
+      };
+  
+      function numberToWords(num) {      
+        const belowTen = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+        const belowTwenty = ['ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+        const belowHundred = ['twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+        const largeNumbers = ['thousand', 'million', 'billion', 'trillion', 'quadrillion', 'quintillion', 'sextillion', 'septillion', 'octillion'];
+      
+        function convert(n) {
+          if (n === 0) return 'zero';
+          if (n < 10) return belowTen[n - 1];
+          if (n < 20) return belowTwenty[n - 10];
+          if (n < 100) {
+            return belowHundred[Math.floor(n / 10) - 2] + (n % 10 !== 0 ? ' ' + convert(n % 10) : '');
+          }
+          if (n < 1000) {
+            return convert(Math.floor(n / 100)) + ' hundred' + (n % 100 !== 0 ? ' ' + convert(n % 100) : '');
+          }
+          
+          for (let i = 0; i < largeNumbers.length; i++) {
+            const divisor = Math.pow(1000, i + 1);
+            if (n < divisor * 1000) {
+              return convert(Math.floor(n / divisor)) + ' ' + largeNumbers[i] + (n % divisor !== 0 ? ' ' + convert(n % divisor) : '');
+            }
+          }
+          return 'Number too large';
+        }
 
-    const DEFINITIONS = {
-      isPrime: `A <b>Prime Number</b> is a positive integer greater than 1 that has no divisors other than <b>1 and itself</b>. Prime numbers are crucial in number theory due to their fundamental properties and are widely used in fields such as cryptography, computer science, and mathematics.`,
-      isEven: `An <b>Even Number</b> is an integer that is <i>divisible by 2</i>. It can be represented in the form <b>2n</b>, where n is an integer. Even numbers are significant in various mathematical constructs and have properties distinct from odd numbers.`,    
-      isOdd: `An <b>Odd Number</b> is an integer that is <i>not divisible by 2</i>. It can be written in the form <b>2n + 1</b>, where n is an integer. Odd numbers have unique properties and play a key role in number theory and various mathematical patterns.`,
-      isSquare: `A <b>Perfect Square</b> is an integer that can be expressed as the square of another integer. For example, 25 is a perfect square since it's 5 squared. Identifying perfect squares is important in solving quadratic equations and in understanding geometric and algebraic properties.`,
-      isCube: `A <b>Perfect Cube</b> is an integer that is the cube of another integer. For instance, 27 is a perfect cube as it's 3 cubed. Perfect cubes are important in understanding three-dimensional geometry and various algebraic functions.`,    
-      isFibonacci: `A <b>Fibonacci Number</b> belongs to a sequence where each number is the sum of the two preceding ones, starting from 0 and 1. This sequence appears in numerous natural phenomena, biological settings, and in various areas of mathematics and art.`,    
-      isPerfectSquare: `Determining if a number is a <b>Perfect Square</b> involves checking if it can be expressed as the square of an integer. This concept is crucial in understanding quadratic forms and Pythagorean triples in geometry and number theory.`,
-      isFactorial: `A number is a <b>Factorial Number</b> if it's the product of all positive integers up to a certain number. For example, 5! (factorial of 5) equals 120. Factorials are fundamental in combinatorics, probability calculations, and series expansions in calculus.`,
-      isPerfect: `A <b>Perfect Number</b> is equal to the sum of its positive divisors, excluding itself. For example, 6 is a perfect number because its divisors are 1, 2, and 3, and 1 + 2 + 3 = 6. Perfect numbers have been studied extensively in number theory for their unique properties.`,    
-      isTriangular: `A <b>Triangular Number</b> can form an equilateral triangle. It's the sum of the first n natural numbers. For example, 6 is triangular because 1 + 2 + 3 = 6. These numbers have applications in combinatorics and geometric arrangements.`,
-      isPentagonal: `A <b>Pentagonal Number</b> represents a pattern where points form a pentagon, and each subsequent layer forms another pentagon. These numbers have applications in various mathematical problems and polygonal number theory.`,
-      isHexagonal: `A <b>Hexagonal Number</b> is a figure number that represents a hexagon with a dot in the center and other dots surrounding it. These numbers are useful in solving certain geometric problems and in understanding polygonal number patterns.`,
-      isPalindrome: `A <b>Palindrome Number</b> is a number that remains the same when its digits are reversed. For example, 121 is a palindrome. These numbers are interesting in number theory and have applications in computer science, specifically in algorithms and data structures.`,
-      isArmstrongNumber: `An <b>Armstrong Number</b> (or narcissistic number) is a number that is the sum of its own digits each raised to the power of the number of digits. For example, 153 is an Armstrong number since 1³ + 5³ + 3³ = 153. They are significant in digital electronics and error checking methods.`,
-      isHarshadNumber: `A <b>Harshad Number</b> is an integer that is divisible by the sum of its digits. For instance, 18 is a Harshad number because 1 + 8 = 9 and 18 is divisible by 9. These numbers are intriguing in recreational mathematics and number theory.`
-    };
-
-    const TESTS = {
-      isPrime: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29],
-      isEven: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20],
-      isOdd: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19],
-      isSquare: [1, 4, 9, 16, 25, 36, 49, 64, 81, 100],
-      isCube: [1, 8, 27, 64, 125, 216, 343, 512, 729, 1000],
-      isFibonacci: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34],
-      isPerfectSquare: [1, 4, 9, 16, 25, 36, 49, 64, 81, 100],
-      isFactorial: [1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800],
-      isPerfect: [6, 28, 496, 8128, 33550336],
-      isTriangular: [1, 3, 6, 10, 15, 21, 28, 36, 45, 55],
-      isPentagonal: [1, 5, 12, 22, 35, 51, 70, 92, 117, 145],
-      isHexagonal: [1, 6, 15, 28, 45, 66, 91, 120, 153, 190],
-      isPalindrome: [11, 22, 33, 44, 55, 66, 77, 88, 99, 101],
-      isArmstrongNumber: [1, 153, 370, 371, 407],
-      isHarshadNumber: [12, 18, 20, 21, 24, 27, 30, 36, 40, 42]
-    };
+        
+      
+        return (n < 0 ? 'minus ' : '') + convert(num);
+      }
 
     </script>
     <template id="article">
       <h1 id="title"></h1>
+      <h2 id="words"></h1>
       <ul id="tags"></ul>
       <ul id="prev"></ul>
       <ul id="next"></ul>  
