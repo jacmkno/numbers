@@ -240,12 +240,9 @@
               return convert(Math.floor(n / divisor)) + ' ' + largeNumbers[i] + (n % divisor !== 0 ? ' ' + convert(n % divisor) : '');
             }
           }
-          return 'Number too large';
-        }
-
-        
-      
-        return (n < 0 ? 'minus ' : '') + convert(num);
+          return false;
+        }            
+        return w ? ((num < 0 ? 'minus ' : '') + convert(num)) : 'Number too large';
       }
 
     </script>
