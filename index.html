@@ -242,7 +242,7 @@
           }
           return false;
         }            
-        return w ? ((num < 0 ? 'minus ' : '') + convert(num)) : 'Number too large';
+        return w ? ((num < 0 ? 'minus ' : '') + convert(Math.abs(num))) : 'Number too large';
       }
 
     </script>
