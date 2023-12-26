@@ -10,21 +10,8 @@
       const N = (n => n.length ? parseInt(n) : 0)(location.search.substr(1));
       const Nwords = numberToWords(N);
       const _w = html => document.write && document.write(html);
-      if(isNaN(N)){
-        document.title = 'Page not Found';
-        if(document.write){
-          _w('<meta name="robots" content="noindex" />');
-          _w(`<link rel="canonical" href="${new URL('./404.html', new URL(window.location.href)).href}" />`);
-        }
-        window.location = '404.html?url=' + encodeURIComponent(window.location); 
-      }else{
-        document.title = 'Number: ' + Nwords;
-        document.querySelector('meta[name="description"]')
-          .setAttribute("content", `${document.title} is quite peculiar. Explore it's properties`);
-      }
-        
-      function props(n) {
-        const calcs = {
+
+      const calcs = {
           isPrime(n) {
             if (n <= 1) return false;
             if (n <= 3) return true;
@@ -133,8 +120,73 @@
             const square = n * n;
             return square.toString().endsWith(n.toString());
           },
+      };
+        
+      if(isNaN(N)){
+        document.title = 'Page not Found';
+        if(document.write){
+          _w('<meta name="robots" content="noindex" />');
+          _w(`<link rel="canonical" href="${new URL('./404.html', new URL(window.location.href)).href}" />`);
         }
-        return Object.entries(calcs).filter(([k, f])=>k.startsWith('is')).map(([k, f])=>[k, f.apply(calcs, [n])]);
+        window.location = '404.html?url=' + encodeURIComponent(window.location); 
+      }else{
+        document.title = 'Number: ' + Nwords;
+        document.querySelector('meta[name="description"]')
+          .setAttribute("content", `${document.title} is quite peculiar. Explore it's properties`);
+      }
+        
+      function props(n) {
+        const prps = Object.entries(calcs).filter(([k, f])=>k.startsWith('is'));        
+        return prps.map(([k, f])=>[k, f.apply(calcs, [n])]);
+      }
+
+      function findIntegersForProps(n, maxTime = 250) {
+        const results = {};
+        const propertyNames = Object.keys(calcs).filter(k => k.startsWith('is'));
+        const timePerProp = maxTime / propertyNames.length;
+    
+        for (const propName of propertyNames) {
+            results[propName] = {
+                next: findNextOrPrev(n, propName, true, timePerProp),
+                prev: findNextOrPrev(n, propName, false, timePerProp)
+            };
+        }
+    
+        return results;
+      }
+    
+      function findNextOrPrev(start, propName, searchNext, maxTime) {
+        let current = searchNext ? start + 1 : start - 1;
+        const startTime = new Date().getTime();
+    
+        while ((searchNext ? current > 0 : current < start) && (new Date().getTime() - startTime) < maxTime) {
+            if (calcs[propName](current)) {
+                return current;
+            }
+            current += searchNext ? 1 : -1;
+        }
+    
+        return null;
+      }
+        
+      function explore(n, step, maxMs=250){
+          if(!step) throw 'Missing Argument: step';
+          const done = {};
+          const t0 = new Date().getTime();
+          const results = [];
+          let isDone = false;
+          const goOn = () => 
+              new Date().getTime() - t0 < maxMs
+              && !isDone
+          ;
+          while(goOn()){
+              n = n + step;
+              const prps = props(n);
+              prps.forEach(([k,v])=>done[k] = done[k] || v);
+              results.push([n, Object.fromEntries(prps)]);
+              isDone = Object.values(done).every(e=>e);
+          }
+          return {isDone, missing: Object.fromEntries(Object.entries(done).filter(([k,v])=>!v)), results};
       }
 
       function renderPage(){
@@ -147,11 +199,18 @@
         const prevNums = new Array(5).fill(0).map((_, i) => N - i - 1);
         const nextNums = new Array(5).fill(0).map((_, i) => N + i + 1);
         const content = document.importNode(document.getElementById('article').content, true);
+        const PN = findIntegersForProps(N);
         content.getElementById('title').innerHTML = `The Integer Number: ${N}`;
         content.getElementById('words').innerHTML = Nwords;
         content.getElementById('tags').innerHTML = props(N).filter(([k,v])=>v).map(([k,v])=>`<li><b>${TITLES[k]??k}</b><p>${DEFINITIONS[k]??''}</p></li>`).join('\n');
-        content.getElementById('prev').innerHTML = prevNums.map(i=>`<li><a href="?${i}">The Number ${i}</a></li>`).join('\n');
-        content.getElementById('next').innerHTML = nextNums.map(i=>`<li><a href="?${i}">The Number ${i}</a></li>`).join('\n');
+        content.getElementById('prev').innerHTML = Object.entries(PN).map(([k, {prev: x}])=>[k,x]).map(([k, x])=> x !== null
+          ? `<li><a href="?${x}">${TITLES[k]??k}: ${x}</a></li>`
+          : `<li>${TITLES[k]??k}: Took to long find.</li>`
+        ).join('\n');
+        content.getElementById('next').innerHTML = Object.entries(PN).map(([k, {next: x}])=>[k,x]).map(([k, x])=> x !== null
+          ? `<li><a href="?${x}">${TITLES[k]??k}: ${x}</a></li>`
+          : `<li>${TITLES[k]??k}: Took to long find.</li>`
+        ).join('\n');
         document.body.appendChild(content);
       }
 
